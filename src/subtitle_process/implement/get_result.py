@@ -6,6 +6,7 @@ from ..utils import crop_images, ocr_dir, save_sub_to_json, save_sub_to_csv
 
 
 def get_result(eps_range:Tuple[int, int]):
+    #chinese_cht_PP-OCRv3
     ocr = PaddleOCR(use_angle_cls=True, lang=OCR_LANGUAGE)
     for eps_idx in range(eps_range[0],eps_range[1]+1):
         print("start OCR eps:",eps_idx)

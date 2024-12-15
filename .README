@@ -1,0 +1,30 @@
+# ABOUT REPO
+
+this is a project for easy setup vllm server in window system WSL.
+
+## Requirement
+```
+OS: Linux
+Python: 3.9 – 3.12
+GPU: compute capability 7.0 or higher (e.g., V100, T4, RTX20xx, A100, L4, H100, etc.)
+CUDA: 12.1
+```
+
+## Setup
+```
+chmod +x setup.sh
+setup.sh
+```
+
+## Start UP
+1. u may choose a vLLM [[Supported Models](https://docs.vllm.ai/en/latest/models/supported_models.html#supported-models)] by the following website.
+
+2. edit the `.env` file in the repo.
+```
+MODEL_NAME=<TheModelName>
+EXPOSE_PORT= <TheExposePort>
+```
+3. excute the model
+```
+./startup.sh
+```

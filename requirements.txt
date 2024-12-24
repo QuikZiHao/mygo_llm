@@ -5,3 +5,12 @@ transformers==4.47.0
 huggingface_hub==0.26.5
 sentencepiece
 llama-index-llms-openai-like==0.3.3
+openpyxl==3.1.5
+ultralytics
+pysubs2==1.7.3
+langdetect==1.0.9
+roboflow==1.1.50
+supervision==0.25.1
+onnx>=1.12.0
+onnxslim
+onnxruntime-gpu

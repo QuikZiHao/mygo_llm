@@ -1,4 +1,4 @@
-from src.subtitle_process.utils.get_frames import get_frames
+from src.subtitle_process_ocr.utils.get_frames import get_frames
 import os
 
 eps = 13

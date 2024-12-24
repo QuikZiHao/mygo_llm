@@ -13,3 +13,11 @@ assets/resource/*.mp4
 
 # Ignore all files inside 'src/subtitle_process/temp'
 src/subtitle_process/temp/*.jpg
+runs
+assets/MY_GO.v3i.yolov11
+assets/resnet_dataset/*
+assets/models/*.onnx
+assets/subs/*/*.ass
+assets/yolo_dataset/
+yolo11n.pt
+src/subtitle_process_ocr/temp

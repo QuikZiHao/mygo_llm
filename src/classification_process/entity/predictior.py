@@ -1,7 +1,7 @@
 import onnxruntime as ort
 import numpy as np
 from ..constants import ONNX_MODEL_CONFIG_PATH
-from ..utils import load_config
+from ..utils import load_config,check_open_mouth
 from .detection import Detection
 from typing import List
 import cv2
@@ -10,10 +10,11 @@ import torch
 from PIL import Image, ImageDraw
 
 
+
 class YoloONNXPredictor:
     def __init__(self):
         config = load_config(ONNX_MODEL_CONFIG_PATH)
-        self.session = ort.InferenceSession(config['model_path'])
+        self.yolo_session = ort.InferenceSession(config['model_path'])
         self.class_names = config['class_names']
         self.conf_threshold = config['conf_threshold']
         self.iou_threshold = config['iou_threshold']
@@ -35,13 +36,14 @@ class YoloONNXPredictor:
         """
         Postprocess the outputs, apply NMS, and format the detections.
         """
-        preds = ops.non_max_suppression( torch.tensor(outputs[0]),conf_thres=0.5,iou_thres=0.45,nc=13)
+        preds = ops.non_max_suppression( torch.tensor(outputs[0]),conf_thres=0.25,iou_thres=0.45,nc=2)
         preds = np.array(preds)
         preds = preds[0]
         detections = []
         for pred in preds:
-            x1, y1, x2, y2, score, label, _ = pred
+            x1, y1, x2, y2, score, label = pred
             detections.append(Detection(label, score, [x1,y1,x2,y2]))
+        detections = check_open_mouth(detections)
         return detections
     
     def show_img(self, image_path ,detections):
@@ -49,11 +51,10 @@ class YoloONNXPredictor:
         image_resized = image.resize((self.imgsz,self.imgsz))
         draw = ImageDraw.Draw(image_resized)
         for detect in detections:
-            detect:Detection = detect
             x1, y1, x2, y2 = detect.bbox
             x1, y1, x2, y2 = max(0, x1), max(0, y1), min(self.imgsz, x2), min(self.imgsz, y2)
             draw.rectangle([x1, y1, x2, y2], outline="red", width=3)
-            label = f"Class {self.class_names[int(detect.label)]}, Conf {detect.confidence:.2f}"
+            label = f"{'Open' if detect.have_open_mouth else 'Close'} Mouth, Conf {detect.confidence:.2f}"
             draw.text((x1, max(y1 - 10, 0)), label, fill="blue")
         image_resized.show()
         
@@ -61,9 +62,9 @@ class YoloONNXPredictor:
         """
         Perform the whole pipeline: load image, run inference, and post-process results.
         """
-        image_tensor = self.preprocess_image(image_path)
-        inputs = {self.session.get_inputs()[0].name: image_tensor}
-        outputs =  self.session.run(None, inputs)
+        image = self.preprocess_image(image_path)
+        inputs = {self.yolo_session.get_inputs()[0].name: image}
+        outputs =  self.yolo_session.run(None, inputs)
         detections = self.postprocess_output(outputs)
         if show:
             self.show_img(image_path,detections)

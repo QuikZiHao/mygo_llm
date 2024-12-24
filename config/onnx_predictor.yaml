@@ -1,19 +1,16 @@
 model_path: assets\models\my_go_yolov11.onnx #input your onnx pathway
 class_names:
   0: 'anon'
-  1: 'mana'
-  2: 'mouth'
-  3: 'muzimi'
-  4: 'nyamuchi'
-  5: 'other'
-  6: 'rana'
-  7: 'rinrinko'
-  8: 'saki'
-  9: 'soyo'
-  10: 'taki'
-  11: 'tomori'
-  12: 'ueka'
-  13: 'umirin'
-conf_threshold: 0.6
-iou_threshold: 0.4
-imgsz: 640
+  1: 'tomori'
+  2: 'taki'
+  3: 'soyo'
+  4: 'rana'
+  5: 'saki'
+  6: 'muzimi'
+  7: 'umirin'
+  8: 'ueka'
+  9: 'nyamuchi'
+  10: 'other' 
+conf_threshold: 0.6 #0.25
+iou_threshold: 0.45
+imgsz: 736

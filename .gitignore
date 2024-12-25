@@ -6,7 +6,7 @@ __pycache__/
 mygo
 
 # Ignore all files and folders inside the 'frames' directory
-assets/frames/*
+assets/frames/*/*
 
 # Ignore .mp4 files inside 'assets/resource'
 assets/resource/*.mp4
@@ -15,8 +15,9 @@ assets/resource/*.mp4
 src/subtitle_process/temp/*.jpg
 runs
 assets/MY_GO.v3i.yolov11
-assets/resnet_dataset/*
+assets/resnet_dataset/*/*
 assets/models/*.onnx
+assets/models/*.pt
 assets/subs/*/*.ass
 assets/yolo_dataset/
 yolo11n.pt

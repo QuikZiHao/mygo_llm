@@ -5,7 +5,7 @@ class Detection:
         self.bbox = bbox
         self.have_open_mouth = False
 
-    def score(self):
+    def score(self) -> float:
         return self.confidence * 2 if self.have_open_mouth else self.confidence
      
     def to_dict(self):

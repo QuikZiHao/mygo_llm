@@ -10,15 +10,21 @@ import torch
 import torch.nn.functional as F
 from torchvision import transforms
 from PIL import Image, ImageDraw
+from .classification_model import ClassificationModel 
 
 
 
 class YoloONNXPredictor:
     def __init__(self):
         config = load_config(ONNX_MODEL_CONFIG_PATH)
-        self.yolo_session = ort.InferenceSession(config['model_path'])
-        # self.resnet_classification = Resnet()
-        self.class_names = config['class_names']
+        self.yolo_session = ort.InferenceSession(config['onnx_path'])
+        available_providers = ort.get_available_providers()
+        if "CUDAExecutionProvider" in available_providers:
+            self.yolo_session.set_providers(["CUDAExecutionProvider"])
+        else:
+            self.yolo_session.set_providers(["CPUExecutionProvider"])
+        self.resnet_classification = ClassificationModel(len(config['class_names']),pretrained=False)
+        self.resnet_classification.load(config['resnet_path'])
         self.conf_threshold = config['conf_threshold']
         self.iou_threshold = config['iou_threshold']
         self.imgsz =  config["imgsz"]
@@ -67,11 +73,12 @@ class YoloONNXPredictor:
         
     def get_images_list(self, image_path:str,detections:List[Detection])->torch.Tensor:
         image = Image.open(image_path).convert("RGB")
+        image = image.resize((self.imgsz,self.imgsz))
         transform = transforms.Compose([
-            transforms.Resize(self.resnet_imgsz),                # Resize to (224, 224)
-            transforms.ToTensor(),                        # Convert image to tensor
-            transforms.Normalize(mean=[0.485, 0.456, 0.406],  # ResNet mean
-                                std=[0.229, 0.224, 0.225]), # ResNet std
+            transforms.Resize((self.resnet_imgsz, self.resnet_imgsz)),                
+            transforms.ToTensor(),                        
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], 
+                                std=[0.229, 0.224, 0.225]), 
         ])
         cropped_images = []
         for detection in detections:
@@ -79,8 +86,7 @@ class YoloONNXPredictor:
             cropped_image = image.crop((xmin, ymin, xmax, ymax))
             transformed_image = transform(cropped_image)
             cropped_images.append(transformed_image)
-        batch_tensor = torch.stack(cropped_images)
-        
+        batch_tensor = torch.stack(cropped_images)       
         return batch_tensor
 
     
@@ -97,8 +103,7 @@ class YoloONNXPredictor:
         if show:
             self.show_img(image_path,detections)
         images_tensor = self.get_images_list(image_path, detections)
-        with torch.no_grad():
-            outputs = self.classification(images_tensor)
+        outputs = self.resnet_classification.predict(images_tensor)
         probabilities = F.softmax(outputs, dim=1)
         max_scores, max_indices = torch.max(probabilities, dim=1)
         for idx in range(len(detections)):

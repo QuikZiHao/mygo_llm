@@ -50,6 +50,6 @@ def name_include(speech:str) -> np.ndarray:
 def solve_detections(detections:List[Detection]) -> np.ndarray:
     score_array = np.zeros(CHARACTER_AMT, dtype=float)
     for detection in detections:
-        score = detections.score
+        score = detection.score()
         score_array[detection.label] = max(score_array[detection.label], score)
     return score_array

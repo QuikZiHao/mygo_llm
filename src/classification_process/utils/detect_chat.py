@@ -11,7 +11,7 @@ def detect_chat(speech: str, detections_list: List[List[Detection]]) -> str:
     for detections in detections_list:
         score_array += solve_detections(detections)
     score_array /= len_detections
-    score_array -= name_score
+    score_array += name_score
     max_score_idx = np.argmax(score_array)
     max_score = score_array[max_score_idx]
     if max_score >= 0.3:

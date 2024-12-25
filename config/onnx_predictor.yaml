@@ -1,4 +1,5 @@
-model_path: assets\models\my_go_yolov11.onnx #input your onnx pathway
+onnx_path: assets\models\my_go_yolov11.onnx #input your onnx pathway
+resnet_path: assets\models\mygo_resnet.pt
 class_names:
   0: 'anon'
   1: 'tomori'

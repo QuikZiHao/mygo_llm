@@ -5,6 +5,9 @@ class Detection:
         self.bbox = bbox
         self.have_open_mouth = False
 
+    def score(self):
+        return self.confidence * 2 if self.have_open_mouth else self.confidence
+     
     def to_dict(self):
         """Convert the Detection object to a dictionary."""
         return {

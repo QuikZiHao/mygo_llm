@@ -14,3 +14,4 @@ class_names:
 conf_threshold: 0.6 #0.25
 iou_threshold: 0.45
 imgsz: 736
+resnet_imgsz: 224

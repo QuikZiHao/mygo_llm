@@ -1,6 +1,8 @@
+import unicodedata
 import numpy as np
 from ..entity.detection import Detection
 from typing import List
+from ..constants import NAME_CONFIG, CHARACTER_AMT
 
 
 def is_open_mouth(person:Detection, mouth:Detection)->bool:
@@ -31,3 +33,23 @@ def check_open_mouth(detections:List[Detection]):
             break
     
     return ppl_detection
+
+def normalize_string(speech: str) -> str:
+    return unicodedata.normalize('NFC', speech).lower()
+
+def name_include(speech:str) -> np.ndarray:
+    speech = normalize_string(speech)
+    score = np.zeros(len(NAME_CONFIG),dtype=float)
+    for idx,info in enumerate(NAME_CONFIG):
+        for name in info["name"]:
+            if normalize_string(name) in speech:
+                score[idx] = -1
+                break
+    return score
+
+def solve_detections(detections:List[Detection]) -> np.ndarray:
+    score_array = np.zeros(CHARACTER_AMT, dtype=float)
+    for detection in detections:
+        score = detections.score
+        score_array[detection.label] = max(score_array[detection.label], score)
+    return score_array

@@ -7,6 +7,8 @@ from typing import List
 import cv2
 from ultralytics.utils import ops
 import torch
+import torch.nn.functional as F
+from torchvision import transforms
 from PIL import Image, ImageDraw
 
 
@@ -15,10 +17,12 @@ class YoloONNXPredictor:
     def __init__(self):
         config = load_config(ONNX_MODEL_CONFIG_PATH)
         self.yolo_session = ort.InferenceSession(config['model_path'])
+        # self.resnet_classification = Resnet()
         self.class_names = config['class_names']
         self.conf_threshold = config['conf_threshold']
         self.iou_threshold = config['iou_threshold']
         self.imgsz =  config["imgsz"]
+        self.resnet_imgsz = config["resnet_imgsz"]
     
     def preprocess_image(self, image_path:str) -> np.ndarray:
         """
@@ -46,6 +50,9 @@ class YoloONNXPredictor:
         detections = check_open_mouth(detections)
         return detections
     
+    def classification(self):
+        self.resnet_classification
+
     def show_img(self, image_path ,detections):
         image = Image.open(image_path)
         image_resized = image.resize((self.imgsz,self.imgsz))
@@ -58,6 +65,25 @@ class YoloONNXPredictor:
             draw.text((x1, max(y1 - 10, 0)), label, fill="blue")
         image_resized.show()
         
+    def get_images_list(self, image_path:str,detections:List[Detection])->torch.Tensor:
+        image = Image.open(image_path).convert("RGB")
+        transform = transforms.Compose([
+            transforms.Resize(self.resnet_imgsz),                # Resize to (224, 224)
+            transforms.ToTensor(),                        # Convert image to tensor
+            transforms.Normalize(mean=[0.485, 0.456, 0.406],  # ResNet mean
+                                std=[0.229, 0.224, 0.225]), # ResNet std
+        ])
+        cropped_images = []
+        for detection in detections:
+            xmin, ymin, xmax, ymax = detection.bbox
+            cropped_image = image.crop((xmin, ymin, xmax, ymax))
+            transformed_image = transform(cropped_image)
+            cropped_images.append(transformed_image)
+        batch_tensor = torch.stack(cropped_images)
+        
+        return batch_tensor
+
+    
     def predict(self, image_path, show:bool = False) -> List[Detection]:
         """
         Perform the whole pipeline: load image, run inference, and post-process results.
@@ -66,6 +92,16 @@ class YoloONNXPredictor:
         inputs = {self.yolo_session.get_inputs()[0].name: image}
         outputs =  self.yolo_session.run(None, inputs)
         detections = self.postprocess_output(outputs)
+        if len(detections) == 0:
+            return detections
         if show:
             self.show_img(image_path,detections)
+        images_tensor = self.get_images_list(image_path, detections)
+        with torch.no_grad():
+            outputs = self.classification(images_tensor)
+        probabilities = F.softmax(outputs, dim=1)
+        max_scores, max_indices = torch.max(probabilities, dim=1)
+        for idx in range(len(detections)):
+            detections[idx].label = max_indices[idx]
+            detections[idx].confidence = max_scores[idx] 
         return detections

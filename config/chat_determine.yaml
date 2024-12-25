@@ -1,0 +1,51 @@
+- class: 0
+  label: anon
+  name:
+    - 愛音
+- class: 1
+  label: tomori
+  name:
+    - 燈
+    - tomori
+    - tomorin
+- class: 2
+  label: taki
+  name:
+    - 立希
+    - rikki
+- class: 3
+  label: soyo
+  name:
+    - 爽世
+    - soyo
+    - soyorin
+- class: 4
+  label: rana
+  name:
+    - 流浪貓
+    - 樂奈
+- class: 5
+  label: saki
+  name:
+    - 小祥
+    - 祥子
+- class: 6
+  label: muzimi
+  name:
+    - 睦
+- class: 7
+  label: umirin
+  name:
+    - 海鈴
+- class: 8
+  label: ueka
+  name:
+    - 初華
+- class: 9
+  label: nyamuchi
+  name:
+    - 喵梦
+    - 祐天寺
+- class: 10
+  label: other
+  name: []

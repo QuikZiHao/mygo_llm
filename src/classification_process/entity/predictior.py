@@ -55,9 +55,6 @@ class YoloONNXPredictor:
             detections.append(Detection(label, score, [x1,y1,x2,y2]))
         detections = check_open_mouth(detections)
         return detections
-    
-    def classification(self):
-        self.resnet_classification
 
     def show_img(self, image_path ,detections):
         image = Image.open(image_path)

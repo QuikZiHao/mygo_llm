@@ -1,17 +1,17 @@
+from typing import List
 from ..utils.solve_data import solve_data
-from langchain.vectorstores import PGVector
-from tqdm import tqdm
+from langchain_core.documents import Document
+from langchain_postgres import PGVector
+from langchain_postgres.vectorstores import PGVector
+from langchain_community.document_loaders import PebbloTextLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
-def bind_embedding(db: PGVector):
-    df = solve_data()
-    character_speech_list = df['character_speech'].tolist()
-    metadatas = []
-    for _, row in tqdm(df.iterrows(), total=df.shape[0], desc="get metadata"):
-        metadata = {
-            "time_range":row["time_range"],
-            "episode":row["episode"]
-        }
-        metadatas.append(metadata)
-
-    db.afrom_texts(texts=character_speech_list,embedding=db.embeddings,metadatas=metadatas)
+def bind_embedding(db: PGVector) -> List:
+    result = solve_data()
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=128)
+    loader = PebbloTextLoader(texts=result["texts"],
+                            metadatas=result["episodes"],)
+    docs = loader.load()
+    splits = text_splitter.split_documents(docs)
+    return db.add_documents(splits,ids=[str(idx+1) for idx in range(len(splits))])

@@ -22,3 +22,5 @@ assets/subs/*/*.ass
 assets/yolo_dataset/
 yolo11n.pt
 src/subtitle_process_ocr/temp
+
+.vscode

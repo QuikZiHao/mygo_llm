@@ -19,12 +19,17 @@ This project combines several fields such as OCR, computer vision, deep learning
 
 ## LLM result
 ![LLM IMAGE](assets/demo/chat_demo1.png)
+ <br>
  ps: 你只是個學生...
+
 ![LLM IMAGE](assets/demo/chat_demo2.png)
- ps: 挺好的...
+ <br>
+ps: 挺好的...
+
 ![LLM IMAGE](assets/demo/chat_demo3.png)
+ <br>
  ps: 是音樂風格不同嗎...
- 
+
 # Project Framework
 
 - Pytorch

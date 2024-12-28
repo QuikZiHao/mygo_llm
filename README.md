@@ -14,10 +14,8 @@ This project combines several fields such as OCR, computer vision, deep learning
 ![YOLO VALID IMAGE](assets\demo\yolo_result.jpg)
 
 ## RESNET50 result
-<div style="display: flex; justify-content: space-around;">
-  <img src="assets/demo/valid_result1.png" alt="resnet_val1" width="400" />
-  <img src="assets/demo/valid_result2.png" alt="resnet_val2" width="400" />
-</div>
+| ![resnet_val1](assets/demo/valid_result1.png) | ![resnet_val2](assets/demo/valid_result2.png) |
+| ----------------------------------------------- | ----------------------------------------------- |
 
 ## LLM result
 ![LLM IMAGE](assets\demo\chat_demo1.png)

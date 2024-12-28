@@ -2,7 +2,7 @@ from src.llm_process.utils.load_model import load_model
 from src.llm_process.utils.load_vectordb import load_vectordb
 from langchain.prompts.chat import ChatPromptTemplate
 from src.llm_process.utils.convert_jinjia import get_systemprompt_template
-from langchain.schema import HumanMessage, SystemMessage
+from langchain.schema import HumanMessage, SystemMessage, AIMessage
 from langchain_postgres import PGVector
 from langchain_openai import ChatOpenAI
 from jinja2 import Template
@@ -45,17 +45,28 @@ class LLMWrapper():
             SystemMessage(content=system_prompts),
             HumanMessage(content=query)
             ])
+        try_idx = 0
         while(True):
             answer = self.predict(prompt)
             try:
-                if answer.split(': ')[1].strip() in speech_list:
+                if self.clean_speech(answer.split('speech: ')[1].strip()) in speech_list:
                     break
             except:
                 continue
-            print(f"{answer} - reply no fulfill the condition... try again")
+            if try_idx == 5:
+                prompt = ChatPromptTemplate.from_messages([
+                SystemMessage(content=system_prompts),
+                HumanMessage(content=query)
+                ])
+                continue
+            prompt.append(AIMessage(content=answer))
+            prompt.append(HumanMessage(content="The speech did not include the lines from the show. Please try again using the following format:\nspeech: (The selected line of dialogue)"))
+            print(f"{answer.split('speech: ')[1].strip()} - reply no fulfill the condition... try again")
         return answer, speech_list
      
-    
-
-
-
+    def clean_speech(self, text: str) -> str:
+        text = re.sub(r'[^\w\s]', '', text) 
+        text = re.sub(r'\n', '', text)
+        text = re.sub(r'\s+', '', text)   
+        text = text.strip()                 
+        return text

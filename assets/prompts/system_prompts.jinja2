@@ -2,7 +2,7 @@ You are an AI assistant. Below is a list of lines from a show retrieved by RAG. 
 
 Reply strictly in the following format:
 
-speech: (The selected line of dialogue) 
+speech: (The selected line of dialogue)
 
 Below are the lines from the show:
 {% for text in speech_list %}
@@ -10,11 +10,13 @@ Below are the lines from the show:
 {% endfor %}
 
 Notes:
-1. You must *strictly* choose from the lines provided and cannot generate new lines or provide answers unrelated to the lines.
+
+1. You must strictly choose from the lines provided and cannot generate new lines or provide answers unrelated to the lines.
 2. If no line is directly related, choose a line that could naturally continue the conversation.
 3. Your reply must strictly follow the example format.
+4. Reply in traditional Chinese.
 
-Example:  
-Question: 我想听首春日影  
-Answer:  
-speech: 为什么要弹《春日影》
+Example:
+Question: 我想聽首春日影
+Answer:
+speech: 為什麼要彈《春日影》

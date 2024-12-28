@@ -1,6 +1,6 @@
 OPENAI_API_KEY": dummy_api_key  # only OPENAI need a real API key
 OPENAI_API_BASE: http://localhost:11434/v1  
-model: qwen2:7b-instruct
+model: qwen2.5:7b
 embedding_model: intfloat/multilingual-e5-large
 db_connection: postgresql+psycopg://admin123:123456@localhost:5432/llm_project_db
 collection_name: "speech_data"
@@ -12,3 +12,4 @@ llm_parameter:
   presence_penalty: 0
   frequency_penalty: 0
 system_prompts: assets\prompts\system_prompts.jinja2
+img_db: "image_db"

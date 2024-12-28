@@ -2,12 +2,16 @@ from src.llm_process.utils.load_model import load_model
 from src.llm_process.utils.load_vectordb import load_vectordb
 from langchain.prompts.chat import ChatPromptTemplate
 from src.llm_process.utils.convert_jinjia import get_systemprompt_template
+from src.llm_process.utils.get_img_db import get_image_db
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 from langchain_postgres import PGVector
 from langchain_openai import ChatOpenAI
+from PIL import Image
 from jinja2 import Template
 from typing import List
+from ..constants import FRAME_DIR, NOT_FOUND_PATH, LLM_CONFIG
 import re
+import os
 
 
 class LLMWrapper():
@@ -16,6 +20,7 @@ class LLMWrapper():
         self.llm:ChatOpenAI = load_model()
         self.vector_db: PGVector =  load_vectordb()
         self.retriever = self.vector_db.as_retriever()
+        self.img_db = get_image_db()
 
     def get_speechlist(self, query:str)-> List[str]:
         retrieved_documents = self.retriever.invoke(query)
@@ -53,16 +58,30 @@ class LLMWrapper():
                     break
             except:
                 continue
+            
             if try_idx == 5:
-                prompt = ChatPromptTemplate.from_messages([
-                SystemMessage(content=system_prompts),
-                HumanMessage(content=query)
-                ])
-                continue
+                return "not found", Image.open(NOT_FOUND_PATH).convert("RGB")
+            try_idx += 1
             prompt.append(AIMessage(content=answer))
             prompt.append(HumanMessage(content="The speech did not include the lines from the show. Please try again using the following format:\nspeech: (The selected line of dialogue)"))
             print(f"{answer.split('speech: ')[1].strip()} - reply no fulfill the condition... try again")
-        return answer, speech_list
+        cursor = self.img_db.cursor()
+        search_speech = self.clean_speech(answer.split('speech: ')[1].strip())
+        query = f"SELECT * FROM {LLM_CONFIG["img_db"]} WHERE speech = %s;"
+        cursor.execute(query, (search_speech,))
+        rows = cursor.fetchall()
+        if rows:
+            image_path = os.path.join(FRAME_DIR, str(rows[0][1]),rows[0][3])
+            try:
+                image = Image.open(image_path).convert("RGB")
+            except:
+                answer = "not found"
+                image = Image.open(NOT_FOUND_PATH).convert("RGB")
+        else:
+            print(f"No records found for speech: {search_speech}")
+        cursor.close()
+
+        return answer, image
      
     def clean_speech(self, text: str) -> str:
         text = re.sub(r'[^\w\s]', '', text) 
@@ -70,3 +89,4 @@ class LLMWrapper():
         text = re.sub(r'\s+', '', text)   
         text = text.strip()                 
         return text
+    

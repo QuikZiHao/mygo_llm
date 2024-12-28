@@ -19,4 +19,6 @@ promptflow-tools==1.4.0
 sentence-transformers==3.3.1
 langchain_huggingface==0.1.2
 langchain_postgres==0.0.12
-psycopg[binary,pool]-3.2.3
+psycopg[binary,pool]==3.2.3
+psycopg2==2.9.10
+streamlit==1.41.1

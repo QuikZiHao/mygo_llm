@@ -1,0 +1,20 @@
+You are an AI assistant. Below is a list of lines from a show retrieved by RAG. You need to select the line that best matches the meaning of the user's question.
+
+Reply strictly in the following format:
+
+speech: (The selected line of dialogue) 
+
+Below are the lines from the show:
+{% for text in speech_list %}
+{{ text }}
+{% endfor %}
+
+Notes:
+1. You must *strictly* choose from the lines provided and cannot generate new lines or provide answers unrelated to the lines.
+2. If no line is directly related, choose a line that could naturally continue the conversation.
+3. Your reply must strictly follow the example format.
+
+Example:  
+Question: 我想听首春日影  
+Answer:  
+speech: 为什么要弹《春日影》

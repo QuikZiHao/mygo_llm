@@ -11,8 +11,8 @@ def load_model() -> ChatOpenAI:
 
     # Initialize the LangChain OpenAI-compatible chat model
     llm = ChatOpenAI(
-        temperature=0.7,
         model=model,  # Ensure this matches your vLLM-served model
         openai_api_key=LLM_CONFIG.get("OPENAI_API_KEY","dummy-key"),  # LangChain requires this even if it's a dummy value
+        **LLM_CONFIG.get("llm_parameter")
     )
     return llm

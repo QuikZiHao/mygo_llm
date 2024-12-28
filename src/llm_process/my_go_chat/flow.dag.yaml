@@ -4,7 +4,7 @@ environment:
 inputs:
   question:
     type: string
-    default: 你這人滿嘴謊言
+    default: 想聼春日影
 outputs:
   answer:
     type: string
@@ -29,7 +29,7 @@ nodes:
   use_variants: true
 node_variants:
   chat:
-    default_variant_id: variant_1
+    default_variant_id: variant_0
     variants:
       variant_0:
         node:

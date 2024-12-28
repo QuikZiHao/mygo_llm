@@ -1,4 +1,3 @@
-import numpy as np
 from ..constants import LLM_CONFIG
 from langchain_huggingface import HuggingFaceEmbeddings
 

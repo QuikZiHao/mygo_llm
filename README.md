@@ -11,18 +11,18 @@ This project combines several fields such as OCR, computer vision, deep learning
 # result
 
 ## YOLO result
-![YOLO VALID IMAGE](assets\demo\yolo_result.jpg)
+![YOLO VALID IMAGE](assets/demo/yolo_result.jpg)
 
 ## RESNET50 result
 | ![resnet_val1](assets/demo/valid_result1.png) | ![resnet_val2](assets/demo/valid_result2.png) |
 | ----------------------------------------------- | ----------------------------------------------- |
 
 ## LLM result
-![LLM IMAGE](assets\demo\chat_demo1.png)
+![LLM IMAGE](assets/demo/chat_demo1.png)
  ps: 你只是個學生...
-![LLM IMAGE](assets\demo\chat_demo2.png)
+![LLM IMAGE](assets/demo/chat_demo2.png)
  ps: 挺好的...
-![LLM IMAGE](assets\demo\chat_demo3.png)
+![LLM IMAGE](assets/demo/chat_demo3.png)
  ps: 是音樂風格不同嗎...
  
 # Project Framework

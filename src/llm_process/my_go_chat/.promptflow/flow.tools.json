@@ -1,0 +1,61 @@
+{
+  "package": {},
+  "code": {
+    "chat.jinja2": {
+      "type": "llm",
+      "inputs": {
+        "question": {
+          "type": [
+            "string"
+          ]
+        },
+        "speech_list": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "chat.jinja2"
+    },
+    "RAG.py": {
+      "type": "python",
+      "inputs": {
+        "query": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "RAG.py",
+      "function": "rag"
+    },
+    "get_text.py": {
+      "type": "python",
+      "inputs": {
+        "speechs_list": {
+          "type": [
+            "object"
+          ]
+        }
+      },
+      "source": "get_text.py",
+      "function": "get_text"
+    },
+    "chat_variant_1.jinja2": {
+      "type": "llm",
+      "inputs": {
+        "question": {
+          "type": [
+            "string"
+          ]
+        },
+        "speech_list": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "chat_variant_1.jinja2"
+    }
+  }
+}

@@ -1,0 +1,63 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  question:
+    type: string
+    default: 你這人滿嘴謊言
+outputs:
+  answer:
+    type: string
+    reference: ${chat.output}
+nodes:
+- name: RAG
+  type: python
+  source:
+    type: code
+    path: RAG.py
+  inputs:
+    query: ${inputs.question}
+  aggregation: false
+- name: get_text
+  type: python
+  source:
+    type: code
+    path: get_text.py
+  inputs:
+    speechs_list: ${RAG.output}
+- name: chat
+  use_variants: true
+node_variants:
+  chat:
+    default_variant_id: variant_1
+    variants:
+      variant_0:
+        node:
+          type: llm
+          source:
+            type: code
+            path: chat.jinja2
+          inputs:
+            deployment_name: gpt-35-turbo
+            max_tokens: 2048
+            temperature: 0.4
+            model: qwen2.5:7b
+            speech_list: ${get_text.output}
+            question: ${inputs.question}
+          connection: qwen2.5:7b
+          api: chat
+      variant_1:
+        node:
+          type: llm
+          source:
+            type: code
+            path: chat_variant_1.jinja2
+          inputs:
+            deployment_name: gpt-35-turbo
+            max_tokens: 2048
+            temperature: 0.4
+            model: qwen2:7b-instruct
+            speech_list: ${get_text.output}
+            question: ${inputs.question}
+          connection: qwen2:7b-instruct
+          api: chat

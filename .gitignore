@@ -25,3 +25,5 @@ src/subtitle_process_ocr/temp
 
 .vscode
 pgvector/pgdata
+
+llm_venv

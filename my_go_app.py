@@ -37,8 +37,7 @@ with st.form(key="chat_form", clear_on_submit=True):
 if submitted and user_input.strip():
     with st.spinner("🤔 Thinking..."):
         try:
-            response_text = predictor.speak(user_input)[0]  # Text caption
-            response = predictor.speak(user_input)[1]  # Response (text or image)
+            response_text, response = predictor.speak(user_input)  
 
             # Append user message and model response to chat history
             st.session_state.chat_history.append({"sender": "user", "message": user_input})
